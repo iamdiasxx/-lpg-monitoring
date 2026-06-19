@@ -24,6 +24,10 @@ RUN npm ci
 
 COPY . .
 
+# Drop any bootstrap cache baked in from local dev — it may reference
+# dev-only providers (e.g. laravel/pail) that aren't installed here.
+RUN rm -f bootstrap/cache/*.php
+
 RUN php artisan package:discover --ansi
 
 ENV NODE_ENV=production
