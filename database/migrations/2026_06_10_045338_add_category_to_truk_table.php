@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Kolom ini sudah ada di migration create_lpg_system_tables sejak
+        // 2026-05-21; guard ini mencegah error "column already exists" saat
+        // migrate dijalankan dari kosong (fresh database).
+        if (Schema::hasColumn('truk', 'kategori_kendaraan')) {
+            return;
+        }
+
         Schema::table('truk', function (Blueprint $table) {
-            // Tambahkan kategori: truk_besar atau mobil_colt
             $table->string('kategori_kendaraan')->default('truk_besar')->after('tipe_truk');
         });
     }

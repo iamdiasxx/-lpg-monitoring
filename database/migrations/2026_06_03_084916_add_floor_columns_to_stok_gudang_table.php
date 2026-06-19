@@ -8,14 +8,20 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Kolom-kolom ini sudah ada di migration create_lpg_system_tables sejak
+        // 2026-05-21; guard ini mencegah error "column already exists" saat
+        // migrate dijalankan dari kosong (fresh database).
+        if (Schema::hasColumn('stok_gudang', 'lantai_1_isi')) {
+            return;
+        }
+
         Schema::table('stok_gudang', function (Blueprint $table) {
-            // Tambahkan kolom lantai setelah kolom jumlah_kosong yang sudah ada
             $table->integer('lantai_1_isi')->default(0)->after('jumlah_kosong');
             $table->integer('lantai_1_kosong')->default(0)->after('lantai_1_isi');
-            
+
             $table->integer('lantai_2_isi')->default(0)->after('lantai_1_kosong');
             $table->integer('lantai_2_kosong')->default(0)->after('lantai_2_isi');
-            
+
             $table->integer('lantai_3_isi')->default(0)->after('lantai_2_kosong');
             $table->integer('lantai_3_kosong')->default(0)->after('lantai_3_isi');
         });
